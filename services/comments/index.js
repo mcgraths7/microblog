@@ -35,6 +35,6 @@ app.post('/posts/:postId/comments', (req, res) => {
   res.status(201).send(newComment);
 });
 
-app.listen(3001, () => {
-  console.log('Listening on port 3001...');
+app.listen(3002, () => {
+  console.log('Comments server is listening on port 3002...');
 });
