@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-// eslint-disable-next-line react/prop-types
 const CommentForm = ({ addComment }) => {
   const [commentContent, setCommentContent] = useState('');
 

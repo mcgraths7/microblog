@@ -1,17 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash-core';
+import axios from 'axios';
 import CommentForm from '../comments/CommentForm';
 import CommentContainer from '../comments/CommentContainer';
 
-// eslint-disable-next-line react/prop-types
 const Post = ({ id, title, content }) => {
   const [comments, setComments] = useState([]);
 
-  const addComment = (commentContent) => {
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3002/posts/${id}/comments`);
+      setComments(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
+
+  const addComment = async (commentContent) => {
     const newComment = {
       id: _.uniqueId(),
       content: commentContent,
     };
+    await axios.post(`http://localhost:3002/posts/${id}/comments`, newComment);
     setComments([...comments, newComment]);
   };
 
@@ -26,10 +40,15 @@ const Post = ({ id, title, content }) => {
         </section>
         <hr className="hr" />
         <section className="card-content">
+          <p className="content">
+            {_.isEmpty(comments)
+              ? "It's too quiet... Add a comment!"
+              : 'Comments:'}
+          </p>
           <CommentContainer comments={comments} />
         </section>
         <footer className="card-content">
-          <CommentForm addComment={addComment} />
+          <CommentForm addComment={addComment} postId={id} />
         </footer>
       </div>
     </div>
