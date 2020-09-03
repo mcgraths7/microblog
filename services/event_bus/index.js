@@ -6,8 +6,11 @@ const app = express();
 
 app.use(bodyParser.json());
 
+const events = [];
+
 app.post('/events', (req, res) => {
   const event = req.body;
+  events.push(event);
   try {
     axios.post('http://localhost:3001/events', event).catch((err) => {
       throw new Error(
@@ -36,8 +39,12 @@ app.post('/events', (req, res) => {
   } catch (err) {
     throw new Error('There was a problem with one of the services...', err);
   }
-
+  console.log(`There are ${events.length} in the queue`);
   return res.status(200).send('Ok');
+});
+
+app.get('/events', (req, res) => {
+  res.status(200).send(events);
 });
 
 app.listen(3005, () => {
