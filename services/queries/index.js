@@ -9,7 +9,7 @@ app.use(cors());
 const posts = {};
 
 app.get('/posts', (req, res) => {
-  res.status(200).send(posts);
+  res.status(200).send('Ok');
 });
 
 app.post('/events', (req, res) => {
@@ -21,20 +21,28 @@ app.post('/events', (req, res) => {
       content: data.content,
       comments: [],
     };
-    console.log(posts);
-    return res.status(201).send('Ok');
   } else if (type === 'CommentCreated') {
     if (posts[data.postId]) {
       posts[data.postId].comments.push({
         id: data.id,
         content: data.content,
+        status: data.status,
       });
     }
-    console.log(posts);
-    return res.status(201).send('Ok');
+  } else if (type === 'CommentUpdated') {
+    const origComments = posts[data.postId].comments;
+    const editedComments = origComments.map((comment) => {
+      if (comment.id === data.id) {
+        return {
+          ...data,
+        };
+      }
+      return comment;
+    });
+    posts[data.postId].comments = [...editedComments];
+    console.log('Event emitted: CommentUpdated');
   }
-  console.log(posts);
-  res.status(200).send('Event received');
+  res.status(200).send('Ok');
 });
 
 app.listen(3003, () => {

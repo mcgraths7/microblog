@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const _ = require('lodash-core');
 const axios = require('axios');
 
 const app = express();
@@ -11,13 +10,8 @@ app.use(cors());
 
 const posts = {};
 
-app.get('/posts', (req, res) => {
-  res.send(posts);
-});
-
 app.post('/posts', async (req, res) => {
-  const { title, content } = req.body;
-  const id = _.uniqueId();
+  const { id, title, content } = req.body;
   const newPost = {
     id,
     title,
@@ -40,16 +34,17 @@ app.post('/posts', async (req, res) => {
         err.message,
       );
     });
+  console.log('Event emitted: PostCreated');
 
-  res.status(201).send(newPost);
+  res.status(201).send('Ok');
 });
 
 app.post('/events', (req, res) => {
-  const event = req.body;
-  if (event && event.type === 'PostCreated') {
-    console.log(event.data);
+  const { type } = req.body;
+  if (type === 'PostCreated') {
+    console.log('Event acknowledged: PostCreated');
   }
-  res.status(200).send('Event received');
+  res.status(200).send('Ok');
 });
 
 app.listen(3001, () => {

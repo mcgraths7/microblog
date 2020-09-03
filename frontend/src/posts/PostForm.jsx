@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import _ from 'lodash-core';
+import { randomBytes } from 'crypto';
 
 const PostForm = ({ addPost }) => {
   const [postTitle, setPostTitle] = useState('');
   const [postContent, setPostContent] = useState('');
 
   const handleSubmit = async (e) => {
+    const id = randomBytes(4).toString('hex');
     e.preventDefault();
     const post = {
-      id: _.uniqueId(),
+      id,
       title: postTitle,
       content: postContent,
     };

@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const axios = require('axios');
-const _ = require('lodash-core');
 
 const app = express();
 
@@ -10,15 +9,6 @@ const commentsByPostId = {};
 
 app.use(bodyParser.json());
 app.use(cors());
-
-app.get('/posts/:postId/comments', (req, res) => {
-  const { postId } = req.params;
-  const postComments = commentsByPostId[postId];
-  if (_.isEmpty(postComments)) {
-    return res.status(404).send(`No comments on post with id of ${postId}`);
-  }
-  return res.status(200).send(postComments);
-});
 
 app.post('/posts/:postId/comments', async (req, res) => {
   const { id, content } = req.body;
@@ -40,6 +30,7 @@ app.post('/posts/:postId/comments', async (req, res) => {
         postId: req.params.postId,
         id: req.body.id,
         content: req.body.content,
+        status: 'pending',
       },
     })
     .catch((err) => {
@@ -48,14 +39,32 @@ app.post('/posts/:postId/comments', async (req, res) => {
         err.message,
       );
     });
+  console.log('Event emitted: CommentCreated');
 
-  res.status(201).send(newComment);
+  res.status(201).send('Ok');
 });
 
-app.post('/events', (req, res) => {
-  const event = req.body;
-  if (event && event.type === 'CommentCreated') {
-    console.log(event.data);
+app.post('/events', async (req, res) => {
+  const { type, data } = req.body;
+  let updatedComment;
+  if (type === 'CommentModerated') {
+    const origComments = commentsByPostId[data.postId];
+    const editedComments = origComments.map((comment) => {
+      if (comment.id === data.id) {
+        updatedComment = {
+          ...comment,
+          status: data.status,
+        };
+        return updatedComment;
+      }
+      return comment;
+    });
+    commentsByPostId[data.postId] = [...editedComments];
+    await axios.post('http://localhost:3005/events', {
+      type: 'CommentUpdated',
+      data,
+    });
+    console.log('Event emitted: CommentUpdated');
   }
   res.status(200).send('Ok');
 });

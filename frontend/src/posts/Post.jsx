@@ -17,7 +17,7 @@ const Post = ({ id, title, content, postComments }) => {
     <div className="column is-half">
       <div className="card">
         <header className="card-header">
-          <p className="card-header-title message">{`${id}. ${title}`}</p>
+          <p className="card-header-title message">{title}</p>
         </header>
         <section className="card-content">
           <div className="content">{content}</div>

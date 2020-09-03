@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import _ from 'lodash-core';
 import axios from 'axios';
+import { randomBytes } from 'crypto';
 
 const CommentForm = ({ postId, addComment }) => {
   const [commentContent, setCommentContent] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const id = randomBytes(4).toString('hex');
 
     const comment = {
       postId,
-      id: _.uniqueId(),
+      id,
       content: commentContent,
+      status: 'pending',
     };
 
     await axios

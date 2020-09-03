@@ -20,7 +20,6 @@ const PostContainer = () => {
       setPosts((previousPosts) => {
         const newPosts = { ...previousPosts };
         newPosts[post.id] = post;
-        console.log({ ...newPosts });
         return { ...newPosts };
       });
     }

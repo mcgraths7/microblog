@@ -5,14 +5,17 @@ import Comment from './Comment';
 
 const CommentContainer = ({ comments }) => {
   const commentItems = _.map(comments, (comment) => (
-    <Comment key={comment.id} id={comment.id} content={comment.content} />
+    <Comment
+      key={comment.id}
+      id={comment.id}
+      content={comment.content}
+      status={comment.status}
+    />
   ));
 
   return (
     <div className="content">
-      <ul className="ul">
-        {commentItems}
-      </ul>
+      <ul className="ul">{commentItems}</ul>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 {
-  "name": "queries",
+  "author": "Steven McGrath",
+  "name": "moderation",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -10,6 +11,11 @@
     "express": "^4.17.1",
     "lodash-core": "^4.17.19",
     "nodemon": "^2.0.4"
+  },
+  "devDependencies": {
+    "eslint": "^7.8.1",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0"
   },
   "scripts": {
     "watch": "nodemon index.js"
