@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import _ from 'lodash-core';
 
 const PostForm = ({ addPost }) => {
   const [postTitle, setPostTitle] = useState('');
   const [postContent, setPostContent] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addPost(postTitle, postContent);
+    const post = {
+      id: _.uniqueId(),
+      title: postTitle,
+      content: postContent,
+    };
+
+    await axios
+      .post('http://localhost:3001/posts', post)
+      .then(() => addPost({ post }));
+
     setPostTitle('');
     setPostContent('');
   };

@@ -7,44 +7,20 @@ import PostForm from './PostForm';
 const PostContainer = () => {
   const [posts, setPosts] = useState({});
 
-  const fetchPosts = async () => {
-    try {
+  useEffect(() => {
+    async function fetchPosts() {
       const response = await axios.get('http://localhost:3001/posts');
-      setPosts(response.data);
-    } catch (err) {
-      console.log('There was a problem...', err);
+      setPosts((previousPosts) => ({ ...previousPosts, ...response.data }));
     }
-  };
-
-  useEffect(async () => {
     fetchPosts();
   }, []);
 
-  const addPost = (postTitle, postContent) => {
-    let id;
-    _.map(posts, (post) => {
-      if (post.id === _.uniqueId) {
-        return _.uniqueId();
-      }
-      id = _.uniqueId();
-      return id;
+  const addPost = ({ post }) => {
+    setPosts((previousPosts) => {
+      const newPosts = { ...previousPosts };
+      newPosts[post.id] = post;
+      return { ...newPosts };
     });
-    const newPost = {
-      id,
-      title: postTitle,
-      content: postContent,
-    };
-    axios.post('http://localhost:3001/posts', {
-      id: newPost.id,
-      title: newPost.title,
-      content: newPost.content,
-    })
-      .then(() => {
-        setPosts({ ...posts, id: newPost });
-      })
-      .catch((err) => {
-        console.log('There was a problem...', err);
-      });
   };
 
   const postItems = _.map(posts, (post) => (
@@ -62,9 +38,7 @@ const PostContainer = () => {
         <PostForm addPost={addPost} />
       </section>
       <section className="section">
-        <div className="columns is-multiline">
-          {postItems}
-        </div>
+        <div className="columns is-multiline">{postItems}</div>
       </section>
     </section>
   );

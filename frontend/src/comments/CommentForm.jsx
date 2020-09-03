@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
+import _ from 'lodash-core';
+import axios from 'axios';
 
-const CommentForm = ({ addComment }) => {
+const CommentForm = ({ postId, addComment }) => {
   const [commentContent, setCommentContent] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addComment(commentContent);
+
+    const comment = {
+      postId,
+      id: _.uniqueId(),
+      content: commentContent,
+    };
+
+    await axios
+      .post(`http://localhost:3002/posts/${postId}/comments`, comment)
+      .then(() => addComment({ comment }));
+
     setCommentContent('');
   };
 

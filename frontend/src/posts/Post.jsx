@@ -7,26 +7,21 @@ import CommentContainer from '../comments/CommentContainer';
 const Post = ({ id, title, content }) => {
   const [comments, setComments] = useState([]);
 
-  const fetchComments = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3002/posts/${id}/comments`);
-      setComments(response.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
+    async function fetchComments() {
+      const response = await axios.get(
+        `http://localhost:3002/posts/${id}/comments`,
+      );
+      setComments(response.data);
+    }
     fetchComments();
-  }, []);
+  }, [id]);
 
-  const addComment = async (commentContent) => {
-    const newComment = {
-      id: _.uniqueId(),
-      content: commentContent,
-    };
-    await axios.post(`http://localhost:3002/posts/${id}/comments`, newComment);
-    setComments([...comments, newComment]);
+  const addComment = ({ comment }) => {
+    setComments((previousComments) => {
+      const newComments = [...previousComments];
+      return [...newComments, comment];
+    });
   };
 
   return (
