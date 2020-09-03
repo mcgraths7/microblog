@@ -1,21 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import _ from 'lodash-core';
-import axios from 'axios';
 import CommentForm from '../comments/CommentForm';
 import CommentContainer from '../comments/CommentContainer';
 
-const Post = ({ id, title, content }) => {
-  const [comments, setComments] = useState([]);
-
-  useEffect(() => {
-    async function fetchComments() {
-      const response = await axios.get(
-        `http://localhost:3002/posts/${id}/comments`,
-      );
-      setComments(response.data);
-    }
-    fetchComments();
-  }, [id]);
+const Post = ({ id, title, content, postComments }) => {
+  const [comments, setComments] = useState(postComments);
 
   const addComment = ({ comment }) => {
     setComments((previousComments) => {

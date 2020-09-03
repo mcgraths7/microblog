@@ -9,6 +9,10 @@ app.use(cors());
 
 const queries = {};
 
+app.get('/queries', (req, res) => {
+  res.status(200).send(queries);
+});
+
 app.post('/events', (req, res) => {
   const event = req.body;
   if (event && event.type === 'PostCreated') {

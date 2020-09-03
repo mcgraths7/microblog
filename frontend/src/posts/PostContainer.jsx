@@ -9,7 +9,7 @@ const PostContainer = () => {
 
   useEffect(() => {
     async function fetchPosts() {
-      const response = await axios.get('http://localhost:3001/posts');
+      const response = await axios.get('http://localhost:3003/queries');
       setPosts((previousPosts) => ({ ...previousPosts, ...response.data }));
     }
     fetchPosts();
@@ -19,6 +19,7 @@ const PostContainer = () => {
     setPosts((previousPosts) => {
       const newPosts = { ...previousPosts };
       newPosts[post.id] = post;
+      console.log({ ...newPosts });
       return { ...newPosts };
     });
   };
@@ -29,6 +30,7 @@ const PostContainer = () => {
       id={post.id}
       title={post.title}
       content={post.content}
+      postComments={post.comments || []}
     />
   ));
 
