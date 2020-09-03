@@ -25,18 +25,21 @@ app.post('/posts', async (req, res) => {
   };
   posts[id] = newPost;
 
-  try {
-    await axios.post('http://localhost:3005/events', {
+  await axios
+    .post('http://localhost:3005/events', {
       type: 'PostCreated',
       data: {
         id: newPost.id,
         title: newPost.title,
         content: newPost.content,
       },
+    })
+    .catch((err) => {
+      throw new Error(
+        'There was a problem emitting the PostCreated event:',
+        err.message,
+      );
     });
-  } catch (err) {
-    console.log('There was a problem...', err);
-  }
 
   res.status(201).send(newPost);
 });
@@ -46,6 +49,7 @@ app.post('/events', (req, res) => {
   if (event && event.type === 'PostCreated') {
     console.log(event.data);
   }
+  res.status(200).send('Event received');
 });
 
 app.listen(3001, () => {

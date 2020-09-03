@@ -9,19 +9,21 @@ const PostContainer = () => {
 
   useEffect(() => {
     async function fetchPosts() {
-      const response = await axios.get('http://localhost:3003/queries');
+      const response = await axios.get('http://localhost:3003/posts');
       setPosts((previousPosts) => ({ ...previousPosts, ...response.data }));
     }
     fetchPosts();
   }, []);
 
   const addPost = ({ post }) => {
-    setPosts((previousPosts) => {
-      const newPosts = { ...previousPosts };
-      newPosts[post.id] = post;
-      console.log({ ...newPosts });
-      return { ...newPosts };
-    });
+    if (!_.isEmpty(post)) {
+      setPosts((previousPosts) => {
+        const newPosts = { ...previousPosts };
+        newPosts[post.id] = post;
+        console.log({ ...newPosts });
+        return { ...newPosts };
+      });
+    }
   };
 
   const postItems = _.map(posts, (post) => (

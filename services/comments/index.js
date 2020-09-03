@@ -21,9 +21,8 @@ app.get('/posts/:postId/comments', (req, res) => {
 });
 
 app.post('/posts/:postId/comments', async (req, res) => {
-  const { content } = req.body;
+  const { id, content } = req.body;
   const { postId } = req.params;
-  const id = _.uniqueId();
   const newComment = {
     id,
     content,
@@ -33,18 +32,23 @@ app.post('/posts/:postId/comments', async (req, res) => {
   } else {
     commentsByPostId[postId] = [newComment];
   }
-  try {
-    await axios.post('http://localhost:3005/events', {
+
+  await axios
+    .post('http://localhost:3005/events', {
       type: 'CommentCreated',
       data: {
         postId: req.params.postId,
         id: req.body.id,
         content: req.body.content,
       },
+    })
+    .catch((err) => {
+      throw new Error(
+        'There was a problem emitting the CommentCreated event: ',
+        err.message,
+      );
     });
-  } catch (err) {
-    console.log('There was a problem...', err);
-  }
+
   res.status(201).send(newComment);
 });
 
@@ -53,6 +57,7 @@ app.post('/events', (req, res) => {
   if (event && event.type === 'CommentCreated') {
     console.log(event.data);
   }
+  res.status(200).send('Ok');
 });
 
 app.listen(3002, () => {

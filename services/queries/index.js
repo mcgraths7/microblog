@@ -1,34 +1,40 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const axios = require('axios');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-const queries = {};
+const posts = {};
 
-app.get('/queries', (req, res) => {
-  res.status(200).send(queries);
+app.get('/posts', (req, res) => {
+  res.status(200).send(posts);
 });
 
 app.post('/events', (req, res) => {
-  const event = req.body;
-  if (event && event.type === 'PostCreated') {
-    queries[event.data.id] = {
-      id: event.data.id,
-      title: event.data.title,
-      content: event.data.content,
+  const { type, data } = req.body;
+  if (type === 'PostCreated') {
+    posts[data.id] = {
+      id: data.id,
+      title: data.title,
+      content: data.content,
       comments: [],
     };
-  } else if (event && event.type === 'CommentCreated') {
-    queries[event.data.postId].comments.push({
-      id: event.data.id,
-      content: event.data.content,
-    });
+    console.log(posts);
+    return res.status(201).send('Ok');
+  } else if (type === 'CommentCreated') {
+    if (posts[data.postId]) {
+      posts[data.postId].comments.push({
+        id: data.id,
+        content: data.content,
+      });
+    }
+    console.log(posts);
+    return res.status(201).send('Ok');
   }
-  console.log(queries);
+  console.log(posts);
+  res.status(200).send('Event received');
 });
 
 app.listen(3003, () => {
