@@ -25,7 +25,7 @@ app.post('/events', async (req, res) => {
   if (type === 'CommentCreated') {
     const moderatedComment = moderateComment(data);
     await axios
-      .post('http://localhost:3005/events', {
+      .post('http://event-bus-clusterip-srv:3005/events', {
         type: 'CommentModerated',
         data: moderatedComment,
       })

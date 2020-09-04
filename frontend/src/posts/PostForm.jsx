@@ -16,7 +16,7 @@ const PostForm = ({ addPost }) => {
     };
 
     await axios
-      .post('http://localhost:3001/posts', post)
+      .post('http://microblog.com/posts/create', post)
       .then(() => addPost({ post }));
 
     setPostTitle('');

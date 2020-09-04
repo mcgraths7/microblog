@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: queries-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: queries
+  template:
+    metadata:
+      labels:
+        app: queries
+    spec:
+      containers:
+        - name: queries
+          image: mcgraths7/microblog-queries
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: queries-clusterip-srv
+spec:
+  selector:
+    app: queries
+  type: ClusterIP
+  ports:
+    - name: queries
+      protocol: TCP
+      port: 3003
+      targetPort: 3003

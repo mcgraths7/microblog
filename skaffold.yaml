@@ -1,0 +1,59 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/deployments/*
+      - ./infra/k8s/services/*
+build:
+  local:
+    push: false
+  artifacts:
+    - image: mcgraths7/microblog-frontend
+      context: frontend
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.jsx'
+            dest: .
+    - image: mcgraths7/microblog-posts
+      context: services/posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: mcgraths7/microblog-comments
+      context: services/comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: mcgraths7/microblog-queries
+      context: services/queries
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: mcgraths7/microblog-moderation
+      context: services/moderation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: mcgraths7/microblog-event-bus
+      context: services/event-bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .

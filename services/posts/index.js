@@ -10,7 +10,7 @@ app.use(cors());
 
 const posts = {};
 
-app.post('/posts', async (req, res) => {
+app.post('/posts/create', async (req, res) => {
   const { id, title, content } = req.body;
   const newPost = {
     id,
@@ -20,7 +20,7 @@ app.post('/posts', async (req, res) => {
   posts[id] = newPost;
 
   await axios
-    .post('http://localhost:3005/events', {
+    .post('http://event-bus-clusterip-srv:3005/events', {
       type: 'PostCreated',
       data: {
         id: newPost.id,
@@ -48,5 +48,5 @@ app.post('/events', (req, res) => {
 });
 
 app.listen(3001, () => {
-  console.log('Posts server is listening on port 3001...');
+  console.log('Posts server v4 is listening on port 3001...');
 });

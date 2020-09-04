@@ -16,6 +16,7 @@
     "eslint-plugin-import": "^2.22.0"
   },
   "scripts": {
-    "watch": "nodemon index.js"
+    "watch": "nodemon index.js",
+    "start": "node index.js"
   }
 }

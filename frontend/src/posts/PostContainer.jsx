@@ -9,7 +9,7 @@ const PostContainer = () => {
 
   useEffect(() => {
     async function fetchPosts() {
-      const response = await axios.get('http://localhost:3003/posts');
+      const response = await axios.get('http://microblog.com/posts');
       setPosts((previousPosts) => ({ ...previousPosts, ...response.data }));
     }
     fetchPosts();

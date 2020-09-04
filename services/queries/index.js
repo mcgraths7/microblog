@@ -69,7 +69,7 @@ app.listen(3003, async () => {
   console.log('Query service listening on port 3003...');
 
   const res = await axios
-    .get('http://localhost:3005/events')
+    .get('http://event-bus-clusterip-srv:3005/events')
     .catch((err) => {
       throw new Error('There was a problem getting events from the event bus', err.message);
     });

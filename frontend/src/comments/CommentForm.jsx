@@ -17,7 +17,7 @@ const CommentForm = ({ postId, addComment }) => {
     };
 
     await axios
-      .post(`http://localhost:3002/posts/${postId}/comments`, comment)
+      .post(`http://microblog.com/posts/${postId}/comments`, comment)
       .then(() => addComment({ comment }));
 
     setCommentContent('');

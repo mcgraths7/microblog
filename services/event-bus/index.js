@@ -12,25 +12,25 @@ app.post('/events', (req, res) => {
   const event = req.body;
   events.push(event);
   try {
-    axios.post('http://localhost:3001/events', event).catch((err) => {
+    axios.post('http://posts-clusterip-srv:3001/events', event).catch((err) => {
       throw new Error(
         'There was a problem emitting an event to the posts service',
         err.message,
       );
     });
-    axios.post('http://localhost:3002/events', event).catch((err) => {
+    axios.post('http://comments-clusterip-srv:3002/events', event).catch((err) => {
       throw new Error(
         'There was a problem emitting an event to comments service...',
         err.message,
       );
     });
-    axios.post('http://localhost:3003/events', event).catch((err) => {
+    axios.post('http://queries-clusterip-srv:3003/events', event).catch((err) => {
       throw new Error(
         'There was a problem emitting an event to queries service...',
         err.message,
       );
     });
-    axios.post('http://localhost:3004/events', event).catch((err) => {
+    axios.post('http://moderation-clusterip-srv:3004/events', event).catch((err) => {
       throw new Error(
         'There was a problem emitting an event to moderation service...',
         err.message,
@@ -39,7 +39,7 @@ app.post('/events', (req, res) => {
   } catch (err) {
     throw new Error('There was a problem with one of the services...', err);
   }
-  console.log(`There are ${events.length} in the queue`);
+  console.log(`There are ${events.length} events in the queue`);
   return res.status(200).send('Ok');
 });
 

@@ -24,7 +24,7 @@ app.post('/posts/:postId/comments', async (req, res) => {
   }
 
   await axios
-    .post('http://localhost:3005/events', {
+    .post('http://event-bus-clusterip-srv:3005/events', {
       type: 'CommentCreated',
       data: {
         postId: req.params.postId,
@@ -53,7 +53,7 @@ app.post('/events', async (req, res) => {
     const postComments = commentsByPostId[postId];
     const comment = postComments.find((c) => c.id === id);
     comment.status = status;
-    await axios.post('http://localhost:3005/events', {
+    await axios.post('http://event-bus-clusterip-srv:3005/events', {
       type: 'CommentUpdated',
       data: {
         postId,
