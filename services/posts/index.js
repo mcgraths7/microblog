@@ -3,29 +3,26 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const axios = require('axios');
 
+const postsRepo = require('./postsRepo');
+
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
 
-const posts = {};
-
 app.post('/posts/create', async (req, res) => {
-  const { id, title, content } = req.body;
-  const newPost = {
-    id,
-    title,
-    content,
-  };
-  posts[id] = newPost;
+  const { title, content } = req.body;
+  const post = await postsRepo.create({
+    title, content,
+  });
 
   await axios
     .post('http://event-bus-clusterip-srv:3005/events', {
       type: 'PostCreated',
       data: {
-        id: newPost.id,
-        title: newPost.title,
-        content: newPost.content,
+        id: post.id,
+        title: post.title,
+        content: post.content,
       },
     })
     .catch((err) => {
@@ -48,5 +45,5 @@ app.post('/events', (req, res) => {
 });
 
 app.listen(3001, () => {
-  console.log('Posts server v4 is listening on port 3001...');
+  console.log('Posts server is listening on port 3001...');
 });

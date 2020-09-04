@@ -3,34 +3,27 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const axios = require('axios');
 
-const app = express();
+const commentsRepo = require('./commentsRepo');
 
-const commentsByPostId = {};
+const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
 
 app.post('/posts/:postId/comments', async (req, res) => {
-  const { id, content } = req.body;
+  const { content } = req.body;
   const { postId } = req.params;
-  const newComment = {
-    id,
-    content,
-  };
-  if (commentsByPostId[postId]) {
-    commentsByPostId[postId] = [...commentsByPostId[postId], newComment];
-  } else {
-    commentsByPostId[postId] = [newComment];
-  }
+
+  const comment = await commentsRepo.create({ content, postId });
 
   await axios
     .post('http://event-bus-clusterip-srv:3005/events', {
       type: 'CommentCreated',
       data: {
-        postId: req.params.postId,
-        id: req.body.id,
-        content: req.body.content,
-        status: 'pending',
+        postId: comment.postId,
+        id: comment.id,
+        content: comment.content,
+        status: comment.status,
       },
     })
     .catch((err) => {
@@ -50,9 +43,9 @@ app.post('/events', async (req, res) => {
     const {
       postId, id, content, status,
     } = data;
-    const postComments = commentsByPostId[postId];
-    const comment = postComments.find((c) => c.id === id);
-    comment.status = status;
+    await commentsRepo.update(id, {
+      postId, id, content, status,
+    });
     await axios.post('http://event-bus-clusterip-srv:3005/events', {
       type: 'CommentUpdated',
       data: {
