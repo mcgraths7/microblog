@@ -68,5 +68,5 @@ app.post('/events', async (req, res) => {
 });
 
 app.listen(3002, () => {
-  console.log('Comments server is listening on port 3002...');
+  console.log('Comments server is now listening on port 3002...');
 });
