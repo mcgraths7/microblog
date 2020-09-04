@@ -29,6 +29,7 @@ There are some requirements before this app can be tested locally
 - Docker Desktop must be installed
 - Kubernetes must be installed (can be enabled inside of docker desktop)
 - Skaffold must be installed ('brew install skaffold' on mac)
+- ingress-nginx must be installed into your cluster. See [getting started](https://kubernetes.github.io/ingress-nginx/deploy/)
 
 Once these requirements are met:
 
