@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const axios = require('axios');
-const _ = require('lodash-core');
+// const _ = require('lodash-core');
 
 const queriesRepo = require('./queriesRepo');
 
@@ -13,33 +13,32 @@ app.use(cors());
 
 const handleEvent = async (type, data) => {
   console.log('Processing', type);
-  console.log(`Data: ${data}`);
   if (type === 'PostCreated') {
-    const { title, content } = data;
+    const { id, title, content, comments } = data;
     await queriesRepo.addPost({
+      id,
       title,
       content,
+      comments,
     });
+    console.log('Post received');
   } else if (type === 'CommentCreated') {
-    const { postId, content } = data;
+    const { id, postId, content, status } = data;
     await queriesRepo.addComment({
-      postId,
-      content,
-    });
-  } else if (type === 'CommentUpdated') {
-    const { postId, id, content, status } = data;
-    await queriesRepo.updateComment({
+      id,
       postId,
       content,
       status,
-      id,
     });
+    console.log('Comment received');
+  } else if (type === 'CommentUpdated') {
+    await queriesRepo.updateComment(data);
+    console.log('Comment updated');
   }
 };
 
 app.get('/posts', async (req, res) => {
   const posts = await queriesRepo.getAll();
-  console.log(`Sending over ${_.size(posts)} posts`);
   res.status(200).send(posts);
 });
 

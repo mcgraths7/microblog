@@ -1,14 +1,8 @@
-const crypto = require('crypto');
-
 const Repository = require('./repository/repository');
-
-const randomId = () => crypto.randomBytes(4).toString('hex');
 
 class QueriesRepository extends Repository {
   async addPost(attrs) {
     const post = { ...attrs };
-    post.id = randomId();
-    post.comments = [];
     const posts = await super.getAll();
     posts[post.id] = post;
     await super.writeAll(posts);
@@ -17,8 +11,6 @@ class QueriesRepository extends Repository {
 
   async addComment(attrs) {
     const comment = { ...attrs };
-    comment.id = randomId();
-    comment.status = 'pending';
     const post = await super.getOne(comment.postId);
     post.comments.push(comment);
     await super.update(comment.postId, {
@@ -34,14 +26,22 @@ class QueriesRepository extends Repository {
     const commentId = updatedComment.id;
     const updatedComments = post.comments.map((c) => {
       if (c.id === commentId) {
-        return updatedComment;
+        return {
+          id: updatedComment.id,
+          postId: updatedComment.postId,
+          content: updatedComment.content,
+          status: updatedComment.status,
+        };
       }
-      return c;
+      return {
+        ...c,
+      };
     });
-    await super.update(updatedComment.postId, {
+    const updatedPost = await super.update(updatedComment.postId, {
       ...post,
       comments: [...updatedComments],
     });
+    return updatedPost;
   }
 }
 

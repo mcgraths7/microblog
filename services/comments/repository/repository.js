@@ -20,11 +20,10 @@ class Repository {
   }
 
   async getAll() {
-    return JSON.parse(
-      await fsPromises.readFile(this.filename, {
-        encoding: 'utf-8',
-      }),
-    );
+    const comments = await fsPromises.readFile(this.filename, {
+      encoding: 'utf-8',
+    });
+    return JSON.parse(comments);
   }
 
   async writeAll(records) {
@@ -52,8 +51,9 @@ class Repository {
       throw new Error(`Record with id ${id} not found`);
     }
 
-    Object.assign(record, attrs);
+    const newRecord = Object.assign(record, attrs);
     await this.writeAll(records);
+    return newRecord;
   }
 }
 

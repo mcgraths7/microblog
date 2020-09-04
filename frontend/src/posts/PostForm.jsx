@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { randomBytes } from 'crypto';
 
 const PostForm = ({ addPost }) => {
   const [postTitle, setPostTitle] = useState('');
   const [postContent, setPostContent] = useState('');
 
   const handleSubmit = async (e) => {
-    const id = randomBytes(4).toString('hex');
     e.preventDefault();
     const post = {
-      id,
       title: postTitle,
       content: postContent,
     };
 
     await axios
       .post('http://microblog.com/posts/create', post)
-      .then(() => addPost({ post }));
+      .then((post) => addPost(post.data))
+      .catch((err) => console.log(err));
 
     setPostTitle('');
     setPostContent('');

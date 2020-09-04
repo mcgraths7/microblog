@@ -9,6 +9,7 @@ class PostsRepository extends Repository {
     const posts = await super.getAll();
     const post = { ...attrs };
     post.id = randomId();
+    post.comments = [];
     posts[post.id] = post;
     await super.writeAll(posts);
     return post;

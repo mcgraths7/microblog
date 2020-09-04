@@ -20,11 +20,10 @@ class Repository {
   }
 
   async getAll() {
-    return JSON.parse(
-      await fsPromises.readFile(this.filename, {
-        encoding: 'utf-8',
-      }),
-    );
+    const posts = await fsPromises.readFile(this.filename, {
+      encoding: 'utf-8',
+    });
+    return JSON.parse(posts);
   }
 
   async writeAll(records) {
@@ -53,7 +52,8 @@ class Repository {
     }
 
     Object.assign(record, attrs);
-    await this.writeAll(records);
+    const newRecords = await this.writeAll(records);
+    return newRecords;
   }
 }
 

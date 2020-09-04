@@ -23,6 +23,7 @@ app.post('/posts/create', async (req, res) => {
         id: post.id,
         title: post.title,
         content: post.content,
+        comments: post.comments,
       },
     })
     .catch((err) => {
@@ -31,16 +32,11 @@ app.post('/posts/create', async (req, res) => {
         err.message,
       );
     });
-  console.log('Event emitted: PostCreated');
-
-  res.status(201).send('Ok');
+  console.log('Post Created');
+  res.status(201).send(post);
 });
 
 app.post('/events', (req, res) => {
-  const { type } = req.body;
-  if (type === 'PostCreated') {
-    console.log('Event acknowledged: PostCreated');
-  }
   res.status(200).send('Ok');
 });
 

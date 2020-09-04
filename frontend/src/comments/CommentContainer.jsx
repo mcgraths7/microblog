@@ -5,12 +5,7 @@ import Comment from './Comment';
 
 const CommentContainer = ({ comments }) => {
   const commentItems = _.map(comments, (comment) => (
-    <Comment
-      key={comment.id}
-      id={comment.id}
-      content={comment.content}
-      status={comment.status}
-    />
+    <Comment key={comment.id} id={comment.id} comment={comment} />
   ));
 
   return (

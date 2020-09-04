@@ -11,6 +11,7 @@ const events = [];
 app.post('/events', (req, res) => {
   const event = req.body;
   events.push(event);
+  console.log('Event received:', event.type);
   try {
     axios.post('http://posts-clusterip-srv:3001/events', event).catch((err) => {
       throw new Error(
@@ -18,28 +19,33 @@ app.post('/events', (req, res) => {
         err.message,
       );
     });
-    axios.post('http://comments-clusterip-srv:3002/events', event).catch((err) => {
-      throw new Error(
-        'There was a problem emitting an event to comments service...',
-        err.message,
-      );
-    });
-    axios.post('http://queries-clusterip-srv:3003/events', event).catch((err) => {
-      throw new Error(
-        'There was a problem emitting an event to queries service...',
-        err.message,
-      );
-    });
-    axios.post('http://moderation-clusterip-srv:3004/events', event).catch((err) => {
-      throw new Error(
-        'There was a problem emitting an event to moderation service...',
-        err.message,
-      );
-    });
+    axios
+      .post('http://comments-clusterip-srv:3002/events', event)
+      .catch((err) => {
+        throw new Error(
+          'There was a problem emitting an event to comments service...',
+          err.message,
+        );
+      });
+    axios
+      .post('http://queries-clusterip-srv:3003/events', event)
+      .catch((err) => {
+        throw new Error(
+          'There was a problem emitting an event to queries service...',
+          err.message,
+        );
+      });
+    axios
+      .post('http://moderation-clusterip-srv:3004/events', event)
+      .catch((err) => {
+        throw new Error(
+          'There was a problem emitting an event to moderation service...',
+          err.message,
+        );
+      });
   } catch (err) {
     throw new Error('There was a problem with one of the services...', err);
   }
-  console.log(`There are ${events.length} events in the queue`);
   return res.status(200).send('Ok');
 });
 

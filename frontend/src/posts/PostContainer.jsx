@@ -15,7 +15,7 @@ const PostContainer = () => {
     fetchPosts();
   }, []);
 
-  const addPost = ({ post }) => {
+  const addPost = (post) => {
     if (!_.isEmpty(post)) {
       setPosts((previousPosts) => {
         const newPosts = { ...previousPosts };

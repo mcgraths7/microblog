@@ -25,4 +25,4 @@ spec:
           - path: /?(.*)
             backend:
               serviceName: frontend-clusterip-srv
-              servicePort: 5000
+              servicePort: 3000

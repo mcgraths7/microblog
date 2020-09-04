@@ -32,7 +32,7 @@ app.post('/events', async (req, res) => {
       .catch((err) => {
         throw new Error('There was a problem.', err.message);
       });
-    console.log('Emitted event: CommentModerated');
+    console.log('Comment moderated');
   }
   res.status(200).send('Ok');
 });

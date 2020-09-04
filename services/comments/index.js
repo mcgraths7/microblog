@@ -15,6 +15,7 @@ app.post('/posts/:postId/comments', async (req, res) => {
   const { postId } = req.params;
 
   const comment = await commentsRepo.create({ content, postId });
+  console.log('Comment created', comment.id);
 
   await axios
     .post('http://event-bus-clusterip-srv:3005/events', {
@@ -32,9 +33,8 @@ app.post('/posts/:postId/comments', async (req, res) => {
         err.message,
       );
     });
-  console.log('Event emitted: CommentCreated');
 
-  res.status(201).send('Ok');
+  res.status(201).send(comment);
 });
 
 app.post('/events', async (req, res) => {
@@ -55,7 +55,6 @@ app.post('/events', async (req, res) => {
         status,
       },
     });
-    console.log('Event emitted: CommentUpdated');
   }
   res.status(200).send('Ok');
 });
